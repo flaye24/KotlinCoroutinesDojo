@@ -11,18 +11,18 @@ interface ForecastLocalDataSource {
     /**
      * Gets the weather daily forecast for the next x days from the local database
      *
-     * @return a [Single] with a [List] of [DailyForecast]
+     * @return a [List] of [DailyForecast]
      */
-    fun getDailyForecasts(): Single<List<DailyForecast>>
+    suspend fun getDailyForecasts(): List<DailyForecast>
 
 
     //TODO : 8 - Converts to suspend function and remove return type
 
     /**
      * Saves the weather daily forecast in the local database
+     * @param weatherForecastToSave : a [List] of [DailyForecast] to save
      *
-     * @return a [Completable]
      */
-    fun saveDailyForecasts(weatherForecastToSave: List<DailyForecast>): Completable
+    suspend fun saveDailyForecasts(weatherForecastToSave: List<DailyForecast>)
 
 }

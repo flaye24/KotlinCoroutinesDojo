@@ -12,5 +12,5 @@ interface WeatherForecastServices {
     //TODO : 3 - Retrofit now has coroutines support, convert to suspend function
 
     @GET("weather")
-    fun getWeatherForecast(@Query("mode") mode: String, @Query("units") unit: String, @Header("Content-Type") contentType: String): Single<WeatherForecastDTO>
+    suspend fun getWeatherForecast(@Query("mode") mode: String, @Query("units") unit: String, @Header("Content-Type") contentType: String): WeatherForecastDTO
 }

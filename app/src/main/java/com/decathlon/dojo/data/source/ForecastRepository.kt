@@ -3,7 +3,6 @@ package com.decathlon.dojo.data.source
 import com.decathlon.dojo.data.model.DailyForecast
 import com.decathlon.dojo.data.source.local.ForecastLocalDataSource
 import com.decathlon.dojo.data.source.remote.ForecastRemoteDataSource
-import io.reactivex.Single
 import javax.inject.Inject
 
 
@@ -16,21 +15,15 @@ class ForecastRepository @Inject constructor(
 
     //TODO : 11 - Convert implementation
 
-    override fun getDailyForecasts(): Single<List<DailyForecast>> {
-        val remoteDailyForecasts = getAndSaveRemoteDailyForecasts()
+    override suspend fun getDailyForecasts(): List<DailyForecast> {
 
-        // Respond immediately with remote daily forecasts if cache is dirty
-        return if (cacheIsDirty) {
-            remoteDailyForecasts
-        } else {
-            // Query the local storage if available. If not, query the network.
-            val localDailyForecasts = forecastLocalDataSource.getDailyForecasts()
-            Single.concat<List<DailyForecast>>(localDailyForecasts, remoteDailyForecasts)
-                .filter { dailyForecast ->
-                    dailyForecast.isNotEmpty()
-                }
-                .firstOrError()
+        val localDailyForecasts = forecastLocalDataSource.getDailyForecasts()
+
+        if (localDailyForecasts.isEmpty() || cacheIsDirty) {
+            return getAndSaveRemoteDailyForecasts()
         }
+
+        return localDailyForecasts
     }
 
     override fun refreshDailyForecasts() {
@@ -38,14 +31,10 @@ class ForecastRepository @Inject constructor(
 
     }
 
-    private fun getAndSaveRemoteDailyForecasts(): Single<List<DailyForecast>> {
-        return forecastRemoteDataSource
-            .getDailyForecasts()
-            .flatMap { dailyForecasts ->
-                forecastLocalDataSource.saveDailyForecasts(dailyForecasts)
-                    .andThen(Single.just(dailyForecasts))
-            }.doOnSuccess {
-                cacheIsDirty = false
-            }
+    private suspend fun getAndSaveRemoteDailyForecasts(): List<DailyForecast> {
+        val remoteDailyForecasts = forecastRemoteDataSource.getDailyForecasts()
+        forecastLocalDataSource.saveDailyForecasts(remoteDailyForecasts)
+        cacheIsDirty = false
+        return remoteDailyForecasts
     }
 }

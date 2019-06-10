@@ -7,6 +7,10 @@ import com.decathlon.dojo.data.source.ForecastDataSource
 import com.decathlon.dojo.data.model.DailyForecast
 import com.decathlon.dojo.utils.schedulers.BaseSchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class WeatherForecastViewModel @Inject constructor(
@@ -20,9 +24,9 @@ class WeatherForecastViewModel @Inject constructor(
     private val _displayErrorMessage = MutableLiveData<String>()
     val displayErrorMessage: LiveData<String> = _displayErrorMessage
 
-    private val compositeDisposable = CompositeDisposable()
-
     //TODO : 12 - Declare coroutine job here
+
+    private val job = SupervisorJob()
 
 
     /**
@@ -43,25 +47,22 @@ class WeatherForecastViewModel @Inject constructor(
 
     private fun getDailyForecasts() {
         //TODO : 13 - add CoroutineScope operating on Main Thread and use launch to get daily forecasts
-        forecastDataSource.getDailyForecasts()
-            .subscribeOn(baseSchedulerProvider.io())
-            .observeOn(baseSchedulerProvider.ui())
-            .subscribe(
-                { dailyForecasts ->
-                    _weatherForecasts.value = dailyForecasts
-                }, { error ->
-                    _displayErrorMessage.value = error.message
-                }
-            ).also { disposable ->
-                compositeDisposable.add(disposable)
+        CoroutineScope(job + Dispatchers.Main).launch {
+            try {
+
+            }catch (exception : Throwable){
+                _displayErrorMessage.value = exception.message
             }
+            val dailyForecasts = forecastDataSource.getDailyForecasts()
+            _weatherForecasts.value = dailyForecasts
+        }
     }
 
 
     override fun onCleared() {
         super.onCleared()
-        compositeDisposable.clear()
         //TODO : 14 - Cancel coroutine job when viewModel is cleared
+        job.cancel()
     }
 
 }
