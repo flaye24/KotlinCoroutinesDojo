@@ -1,6 +1,6 @@
 package com.decathlon.dojo.weather.di
 
-import com.decathlon.dojo.data.source.WeatherForecastDataSource
+import com.decathlon.dojo.data.source.ForecastDataSource
 import com.decathlon.dojo.utils.schedulers.BaseSchedulerProvider
 import com.decathlon.dojo.weather.viewmodel.WeatherForecastViewModel
 import com.decathlon.dojo.weather.viewmodel.WeatherViewModelFactory
@@ -17,9 +17,9 @@ class WeatherPresentationModule {
 
     @Provides
     fun provideViewModel(
-        weatherForecastDataSource: WeatherForecastDataSource,
+        forecastDataSource: ForecastDataSource,
         baseSchedulerProvider: BaseSchedulerProvider
     ): WeatherForecastViewModel {
-        return WeatherForecastViewModel(weatherForecastDataSource, baseSchedulerProvider)
+        return WeatherForecastViewModel(forecastDataSource, baseSchedulerProvider)
     }
 }

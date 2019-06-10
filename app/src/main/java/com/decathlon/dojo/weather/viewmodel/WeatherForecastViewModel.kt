@@ -3,14 +3,14 @@ package com.decathlon.dojo.weather.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.decathlon.dojo.data.source.WeatherForecastDataSource
+import com.decathlon.dojo.data.source.ForecastDataSource
 import com.decathlon.dojo.data.model.DailyForecast
 import com.decathlon.dojo.utils.schedulers.BaseSchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
 class WeatherForecastViewModel @Inject constructor(
-    private val weatherForecastDataSource: WeatherForecastDataSource,
+    private val forecastDataSource: ForecastDataSource,
     private val baseSchedulerProvider: BaseSchedulerProvider
 ) :
     ViewModel() {
@@ -21,6 +21,8 @@ class WeatherForecastViewModel @Inject constructor(
     val displayErrorMessage: LiveData<String> = _displayErrorMessage
 
     private val compositeDisposable = CompositeDisposable()
+
+    //TODO : 12 - Declare coroutine job here
 
 
     /**
@@ -34,13 +36,14 @@ class WeatherForecastViewModel @Inject constructor(
      * Refreshes and loads weather forecasts from repository
      */
     fun onRefresh() {
-        weatherForecastDataSource.refreshDailyForecasts()
+        forecastDataSource.refreshDailyForecasts()
         getDailyForecasts()
     }
 
 
     private fun getDailyForecasts() {
-        weatherForecastDataSource.getDailyForecasts()
+        //TODO : 13 - add CoroutineScope operating on Main Thread and use launch to get daily forecasts
+        forecastDataSource.getDailyForecasts()
             .subscribeOn(baseSchedulerProvider.io())
             .observeOn(baseSchedulerProvider.ui())
             .subscribe(
@@ -58,6 +61,7 @@ class WeatherForecastViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.clear()
+        //TODO : 14 - Cancel coroutine job when viewModel is cleared
     }
 
 }

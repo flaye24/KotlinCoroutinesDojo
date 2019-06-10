@@ -52,8 +52,6 @@ dependencies {
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
 
-    // Architecture Components
-
     // Room
     implementation "androidx.room:room-runtime:$roomVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
@@ -82,8 +80,12 @@ dependencies {
     testImplementation "com.google.truth:truth:$truthVersion"
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 
+    //TODO : 1 - Add kotlin coroutines dependencies here
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 
-    //implementation "androidx.room:room-ktx:$roomVersion"
-    //testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
-    //testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
+
+    //TODO : 2 - Add kotlin room with coroutines support dependencies here
+    //Room support for kotlin coroutines
+    implementation "androidx.room:room-ktx:$roomVersion"
 }

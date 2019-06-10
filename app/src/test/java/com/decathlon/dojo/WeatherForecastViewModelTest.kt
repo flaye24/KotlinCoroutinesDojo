@@ -2,7 +2,7 @@ package com.decathlon.dojo
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.decathlon.dojo.data.model.DailyForecast
-import com.decathlon.dojo.data.source.WeatherForecastDataSource
+import com.decathlon.dojo.data.source.ForecastDataSource
 import com.decathlon.dojo.utils.schedulers.BaseSchedulerProvider
 import com.decathlon.dojo.utils.schedulers.ImmediateSchedulerProvider
 import com.decathlon.dojo.weather.viewmodel.WeatherForecastViewModel
@@ -24,7 +24,7 @@ class WeatherForecastViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     @Mock
-    private lateinit var weatherForecastDataSource: WeatherForecastDataSource
+    private lateinit var forecastDataSource: ForecastDataSource
 
     private lateinit var schedulerProvider: BaseSchedulerProvider
 
@@ -117,13 +117,13 @@ class WeatherForecastViewModelTest {
         schedulerProvider = ImmediateSchedulerProvider()
 
         // Get a reference to the class under test
-        weatherForecastViewModel = WeatherForecastViewModel(weatherForecastDataSource, schedulerProvider)
+        weatherForecastViewModel = WeatherForecastViewModel(forecastDataSource, schedulerProvider)
     }
 
     @Test
     fun dailyForecasts__loadWeatherForecast__loadDailyForecastIntoView() {
         // Given an initialized WeatherForecastViewModel with daily forecasts
-        `when`(weatherForecastDataSource.getDailyForecasts()).thenReturn(Single.just(mockedDailyForecast))
+        `when`(forecastDataSource.getDailyForecasts()).thenReturn(Single.just(mockedDailyForecast))
 
         // When loading of weather forecasts is requested
         weatherForecastViewModel.loadWeatherForecast()
@@ -136,7 +136,7 @@ class WeatherForecastViewModelTest {
     @Test
     fun dailyForecastsError__loadWeatherForecast__displayErrorMessage() {
         // Given an error occurred while loading daily forecasts
-        `when`(weatherForecastDataSource.getDailyForecasts()).thenReturn(Single.error(RuntimeException("Error while loading daily forecasts")))
+        `when`(forecastDataSource.getDailyForecasts()).thenReturn(Single.error(RuntimeException("Error while loading daily forecasts")))
 
         // When loading of weather forecasts is requested
         weatherForecastViewModel.loadWeatherForecast()

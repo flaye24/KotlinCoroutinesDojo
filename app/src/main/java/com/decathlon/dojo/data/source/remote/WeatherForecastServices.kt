@@ -9,7 +9,8 @@ import retrofit2.http.Query
 
 interface WeatherForecastServices {
 
-    @GET("weather")
+    //TODO : 3 - Retrofit now has coroutines support, convert to suspend function
 
-    fun getWeatherForecast(@Query("mode") mode: String, @Query("units") unit: String,  @Header("Content-Type") contentType : String): Single<WeatherForecastDTO>
+    @GET("weather")
+    fun getWeatherForecast(@Query("mode") mode: String, @Query("units") unit: String, @Header("Content-Type") contentType: String): Single<WeatherForecastDTO>
 }

@@ -1,18 +1,20 @@
 package com.decathlon.dojo.data.source
 
 import com.decathlon.dojo.data.model.DailyForecast
-import com.decathlon.dojo.data.source.local.WeatherForecastLocalDataSource
-import com.decathlon.dojo.data.source.remote.WeatherForecastRemoteDataSource
+import com.decathlon.dojo.data.source.local.ForecastLocalDataSource
+import com.decathlon.dojo.data.source.remote.ForecastRemoteDataSource
 import io.reactivex.Single
 import javax.inject.Inject
 
 
-class WeatherForecastRepository @Inject constructor(
-    private val weatherForecastRemoteDataSource: WeatherForecastRemoteDataSource,
-    private val weatherForecastLocalDataSource: WeatherForecastLocalDataSource
-) : WeatherForecastDataSource {
+class ForecastRepository @Inject constructor(
+    private val forecastRemoteDataSource: ForecastRemoteDataSource,
+    private val forecastLocalDataSource: ForecastLocalDataSource
+) : ForecastDataSource {
 
     private var cacheIsDirty = false
+
+    //TODO : 11 - Convert implementation
 
     override fun getDailyForecasts(): Single<List<DailyForecast>> {
         val remoteDailyForecasts = getAndSaveRemoteDailyForecasts()
@@ -22,7 +24,7 @@ class WeatherForecastRepository @Inject constructor(
             remoteDailyForecasts
         } else {
             // Query the local storage if available. If not, query the network.
-            val localDailyForecasts = weatherForecastLocalDataSource.getDailyForecasts()
+            val localDailyForecasts = forecastLocalDataSource.getDailyForecasts()
             Single.concat<List<DailyForecast>>(localDailyForecasts, remoteDailyForecasts)
                 .filter { dailyForecast ->
                     dailyForecast.isNotEmpty()
@@ -37,10 +39,10 @@ class WeatherForecastRepository @Inject constructor(
     }
 
     private fun getAndSaveRemoteDailyForecasts(): Single<List<DailyForecast>> {
-        return weatherForecastRemoteDataSource
+        return forecastRemoteDataSource
             .getDailyForecasts()
             .flatMap { dailyForecasts ->
-                weatherForecastLocalDataSource.saveDailyForecasts(dailyForecasts)
+                forecastLocalDataSource.saveDailyForecasts(dailyForecasts)
                     .andThen(Single.just(dailyForecasts))
             }.doOnSuccess {
                 cacheIsDirty = false

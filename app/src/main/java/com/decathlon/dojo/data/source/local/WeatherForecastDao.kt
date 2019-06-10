@@ -12,6 +12,8 @@ import io.reactivex.Single
 @Dao
 abstract class WeatherForecastDao {
 
+    //TODO : 6 - Room now has coroutines support, convert to suspend functions
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertDailyForecasts(dailyForecasts: List<DailyForecast>): Completable
 
