@@ -11,6 +11,7 @@ import javax.inject.Inject
 
 class WeatherForecastViewModel @Inject constructor(
     private val forecastDataSource: ForecastDataSource,
+    //TODO : 12 replace scheduler provider by coroutine dispatcher provider
     private val baseSchedulerProvider: BaseSchedulerProvider
 ) :
     ViewModel() {
@@ -22,7 +23,7 @@ class WeatherForecastViewModel @Inject constructor(
 
     private val compositeDisposable = CompositeDisposable()
 
-    //TODO : 12 - Declare coroutine job here
+    //TODO : 13 - Declare coroutine job here
 
 
     /**
@@ -42,7 +43,7 @@ class WeatherForecastViewModel @Inject constructor(
 
 
     private fun getDailyForecasts() {
-        //TODO : 13 - add CoroutineScope operating on Main Thread and use launch to get daily forecasts
+        //TODO : 14 - add CoroutineScope operating on Main Thread and use launch to get daily forecasts
         forecastDataSource.getDailyForecasts()
             .subscribeOn(baseSchedulerProvider.io())
             .observeOn(baseSchedulerProvider.ui())
@@ -61,7 +62,7 @@ class WeatherForecastViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.clear()
-        //TODO : 14 - Cancel coroutine job when viewModel is cleared
+        //TODO : 15 - Cancel coroutine job when viewModel is cleared
     }
 
 }

@@ -26,6 +26,7 @@ class WeatherForecastViewModelTest {
     @Mock
     private lateinit var forecastDataSource: ForecastDataSource
 
+    //TODO : 16 replace scheduler provider by coroutine dispatcher provider
     private lateinit var schedulerProvider: BaseSchedulerProvider
 
     private lateinit var weatherForecastViewModel: WeatherForecastViewModel
@@ -113,13 +114,14 @@ class WeatherForecastViewModelTest {
         // inject the mocks in the test the initMocks method needs to be called.
         MockitoAnnotations.initMocks(this)
 
-        // Make the sure that all schedulers are immediate.
+        //TODO : 17 use TestCoroutineDispatcher here
         schedulerProvider = ImmediateSchedulerProvider()
 
         // Get a reference to the class under test
         weatherForecastViewModel = WeatherForecastViewModel(forecastDataSource, schedulerProvider)
     }
 
+    //TODO : 18 use runBlocking coroutine and remove Rx Single
     @Test
     fun dailyForecasts__loadWeatherForecast__loadDailyForecastIntoView() {
         // Given an initialized WeatherForecastViewModel with daily forecasts
@@ -133,6 +135,7 @@ class WeatherForecastViewModelTest {
     }
 
 
+    //TODO : 19 use runBlocking coroutine and remove Rx Single
     @Test
     fun dailyForecastsError__loadWeatherForecast__displayErrorMessage() {
         // Given an error occurred while loading daily forecasts

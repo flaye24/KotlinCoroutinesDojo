@@ -81,11 +81,7 @@ dependencies {
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 
     //TODO : 1 - Add kotlin coroutines dependencies here
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 
 
     //TODO : 2 - Add kotlin room with coroutines support dependencies here
-    //Room support for kotlin coroutines
-    implementation "androidx.room:room-ktx:$roomVersion"
 }
