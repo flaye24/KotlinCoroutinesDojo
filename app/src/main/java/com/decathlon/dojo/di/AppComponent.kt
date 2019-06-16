@@ -2,7 +2,7 @@ package com.decathlon.dojo.di
 
 import android.app.Application
 import com.decathlon.dojo.DojoApplication
-import com.decathlon.dojo.data.di.SchedulersModule
+import com.decathlon.dojo.data.di.DispatchersModule
 import com.decathlon.dojo.data.di.WeatherForecastRepositoryModule
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -13,7 +13,7 @@ import dagger.BindsInstance
     modules = [AndroidInjectionModule::class,
         ActivityBindingModule::class,
         NetworkModule::class,
-        SchedulersModule::class,
+        DispatchersModule::class,
         WeatherForecastRepositoryModule::class]
 )
 interface AppComponent : AndroidInjector<DojoApplication> {

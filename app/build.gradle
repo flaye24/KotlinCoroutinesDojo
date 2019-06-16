@@ -78,11 +78,11 @@ dependencies {
     testImplementation "androidx.arch.core:core-testing:$archTestingVersion"
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
     testImplementation "com.google.truth:truth:$truthVersion"
-    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 
     //TODO : 1 - Add kotlin coroutines dependencies here
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
 
 
     //TODO : 2 - Add kotlin room with coroutines support dependencies here

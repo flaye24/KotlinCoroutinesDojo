@@ -3,10 +3,10 @@ package com.decathlon.dojo.weather.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.decathlon.dojo.data.source.ForecastDataSource
 import com.decathlon.dojo.data.model.DailyForecast
-import com.decathlon.dojo.utils.schedulers.BaseSchedulerProvider
-import io.reactivex.disposables.CompositeDisposable
+import com.decathlon.dojo.data.source.ForecastDataSource
+import com.decathlon.dojo.utils.dispatchers.CoroutineDispatcherProvider
+import com.decathlon.dojo.utils.dispatchers.TestCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -15,7 +15,8 @@ import javax.inject.Inject
 
 class WeatherForecastViewModel @Inject constructor(
     private val forecastDataSource: ForecastDataSource,
-    private val baseSchedulerProvider: BaseSchedulerProvider
+    //TODO : 12 replace scheduler provider by coroutine dispatcher provider
+    private val coroutineDispatcherProvider: CoroutineDispatcherProvider
 ) :
     ViewModel() {
 
@@ -24,8 +25,7 @@ class WeatherForecastViewModel @Inject constructor(
     private val _displayErrorMessage = MutableLiveData<String>()
     val displayErrorMessage: LiveData<String> = _displayErrorMessage
 
-    //TODO : 12 - Declare coroutine job here
-
+    //TODO : 13 - Declare coroutine job here
     private val job = SupervisorJob()
 
 
@@ -46,22 +46,21 @@ class WeatherForecastViewModel @Inject constructor(
 
 
     private fun getDailyForecasts() {
-        //TODO : 13 - add CoroutineScope operating on Main Thread and use launch to get daily forecasts
-        CoroutineScope(job + Dispatchers.Main).launch {
+        //TODO : 14 - add CoroutineScope operating on Main Thread and use launch to get daily forecasts
+        CoroutineScope(job +  coroutineDispatcherProvider.main).launch {
             try {
-
-            }catch (exception : Throwable){
+                val dailyForecasts = forecastDataSource.getDailyForecasts()
+                _weatherForecasts.value = dailyForecasts
+            } catch (exception: Throwable) {
                 _displayErrorMessage.value = exception.message
             }
-            val dailyForecasts = forecastDataSource.getDailyForecasts()
-            _weatherForecasts.value = dailyForecasts
         }
     }
 
 
     override fun onCleared() {
         super.onCleared()
-        //TODO : 14 - Cancel coroutine job when viewModel is cleared
+        //TODO : 15 - Cancel coroutine job when viewModel is cleared
         job.cancel()
     }
 

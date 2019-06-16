@@ -9,7 +9,13 @@ import com.decathlon.dojo.utils.schedulers.BaseSchedulerProvider
 import com.decathlon.dojo.utils.schedulers.ImmediateSchedulerProvider
 import com.decathlon.dojo.weather.viewmodel.WeatherForecastViewModel
 import io.reactivex.Single
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -21,16 +27,16 @@ import org.mockito.MockitoAnnotations
 import java.lang.RuntimeException
 
 
-class WeatherForecastViewModelTest {
+@ExperimentalCoroutinesApi
+class WeatherForecastViewModelExperimentalTest {
 
     @get:Rule
-    val rule = InstantTaskExecutorRule()
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Mock
     private lateinit var forecastDataSource: ForecastDataSource
 
-    //TODO : 16 replace scheduler provider by coroutine dispatcher provider
-    private lateinit var coroutineDispatcherProvider: CoroutineDispatcherProvider
+    private lateinit var testCoroutineDispatcher: kotlinx.coroutines.test.TestCoroutineDispatcher
 
     private lateinit var weatherForecastViewModel: WeatherForecastViewModel
 
@@ -117,16 +123,16 @@ class WeatherForecastViewModelTest {
         // inject the mocks in the test the initMocks method needs to be called.
         MockitoAnnotations.initMocks(this)
 
-        //TODO : 17 use TestCoroutineDispatcher here
-        coroutineDispatcherProvider = TestCoroutineDispatcher()
+        testCoroutineDispatcher = kotlinx.coroutines.test.TestCoroutineDispatcher()
+
+        Dispatchers.setMain(testCoroutineDispatcher)
 
         // Get a reference to the class under test
-        weatherForecastViewModel = WeatherForecastViewModel(forecastDataSource, coroutineDispatcherProvider)
+        //weatherForecastViewModel = WeatherForecastViewModel(forecastDataSource)
     }
 
-    //TODO : 18 use runBlocking coroutine and remove Rx Single
     @Test
-    fun dailyForecasts__loadWeatherForecast__loadDailyForecastIntoView() = runBlocking {
+    fun dailyForecasts__loadWeatherForecast__loadDailyForecastIntoView() = runBlockingTest {
         // Given an initialized WeatherForecastViewModel with daily forecasts
         `when`(forecastDataSource.getDailyForecasts()).thenReturn(mockedDailyForecast)
 
@@ -138,9 +144,8 @@ class WeatherForecastViewModelTest {
     }
 
 
-    //TODO : 19 use runBlocking coroutine and remove Rx Single
     @Test
-    fun dailyForecastsError__loadWeatherForecast__displayErrorMessage() = runBlocking {
+    fun dailyForecastsError__loadWeatherForecast__displayErrorMessage() = runBlockingTest {
         // Given an error occurred while loading daily forecasts
         `when`(forecastDataSource.getDailyForecasts()).thenThrow(RuntimeException("Error while loading daily forecasts"))
 
@@ -149,5 +154,10 @@ class WeatherForecastViewModelTest {
 
         // Then error message is shown
         assertEquals("Error while loading daily forecasts", weatherForecastViewModel.displayErrorMessage.value)
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
     }
 }
