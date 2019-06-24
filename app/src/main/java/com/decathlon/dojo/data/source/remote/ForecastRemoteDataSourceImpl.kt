@@ -6,14 +6,14 @@ import javax.inject.Inject
 
 class ForecastRemoteDataSourceImpl @Inject constructor(
     private val weatherForecastMapper: WeatherForecastMapper,
-    private val weatherForecastServices: WeatherForecastServices
+    private val forecastServices: ForecastServices
 ) :
     ForecastRemoteDataSource {
 
     //TODO : 5 - Convert implementation
 
     override suspend fun getDailyForecasts(): List<DailyForecast> {
-        val weatherForecastDTO = weatherForecastServices.getWeatherForecast("json", "metric", "application/json")
+        val weatherForecastDTO = forecastServices.getWeatherForecast("json", "metric", "application/json")
         return weatherForecastMapper.convertDailyForecastDTOsToDailyForecasts(weatherForecastDTO.dailyForecastDTOs)
     }
 

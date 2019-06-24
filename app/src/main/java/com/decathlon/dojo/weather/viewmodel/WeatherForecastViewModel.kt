@@ -6,9 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.decathlon.dojo.data.model.DailyForecast
 import com.decathlon.dojo.data.source.ForecastDataSource
 import com.decathlon.dojo.utils.dispatchers.CoroutineDispatcherProvider
-import com.decathlon.dojo.utils.dispatchers.TestCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -40,7 +38,7 @@ class WeatherForecastViewModel @Inject constructor(
      * Refreshes and loads weather forecasts from repository
      */
     fun onRefresh() {
-        forecastDataSource.refreshDailyForecasts()
+        forecastDataSource.invalidateForecastsCache()
         getDailyForecasts()
     }
 

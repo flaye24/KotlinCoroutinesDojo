@@ -26,7 +26,7 @@ class ForecastRepository @Inject constructor(
         return localDailyForecasts
     }
 
-    override fun refreshDailyForecasts() {
+    override fun invalidateForecastsCache() {
         cacheIsDirty = true
 
     }

@@ -7,7 +7,7 @@ import retrofit2.http.Header
 import retrofit2.http.Query
 
 
-interface WeatherForecastServices {
+interface ForecastServices {
 
     //TODO : 3 - Retrofit now has coroutines support, convert to suspend function
 
