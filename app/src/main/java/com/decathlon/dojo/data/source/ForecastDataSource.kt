@@ -21,6 +21,6 @@ interface ForecastDataSource {
     /**
      * Clears cache
      */
-    fun refreshDailyForecasts()
+    fun invalidateForecastsCache()
 
 }

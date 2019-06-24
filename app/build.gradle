@@ -84,4 +84,6 @@ dependencies {
 
 
     //TODO : 2 - Add kotlin room with coroutines support dependencies here
+
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
 }

@@ -5,7 +5,7 @@ import com.decathlon.dojo.data.model.DailyForecast
 import com.decathlon.dojo.data.source.ForecastDataSource
 import com.decathlon.dojo.utils.schedulers.BaseSchedulerProvider
 import com.decathlon.dojo.utils.schedulers.ImmediateSchedulerProvider
-import com.decathlon.dojo.weather.viewmodel.WeatherForecastViewModel
+import com.decathlon.dojo.weather.viewmodel.ForecastViewModel
 import io.reactivex.Single
 import org.junit.Test
 
@@ -18,7 +18,7 @@ import org.mockito.MockitoAnnotations
 import java.lang.RuntimeException
 
 
-class WeatherForecastViewModelTest {
+class ForecastViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -29,7 +29,7 @@ class WeatherForecastViewModelTest {
     //TODO : 16 replace scheduler provider by coroutine dispatcher provider
     private lateinit var schedulerProvider: BaseSchedulerProvider
 
-    private lateinit var weatherForecastViewModel: WeatherForecastViewModel
+    private lateinit var forecastViewModel: ForecastViewModel
 
     private val mockedDailyForecast = listOf(
         DailyForecast(
@@ -118,20 +118,20 @@ class WeatherForecastViewModelTest {
         schedulerProvider = ImmediateSchedulerProvider()
 
         // Get a reference to the class under test
-        weatherForecastViewModel = WeatherForecastViewModel(forecastDataSource, schedulerProvider)
+        forecastViewModel = ForecastViewModel(forecastDataSource, schedulerProvider)
     }
 
     //TODO : 18 use runBlocking coroutine and remove Rx Single
     @Test
     fun dailyForecasts__loadWeatherForecast__loadDailyForecastIntoView() {
-        // Given an initialized WeatherForecastViewModel with daily forecasts
+        // Given an initialized ForecastViewModel with daily forecasts
         `when`(forecastDataSource.getDailyForecasts()).thenReturn(Single.just(mockedDailyForecast))
 
         // When loading of weather forecasts is requested
-        weatherForecastViewModel.loadWeatherForecast()
+        forecastViewModel.loadWeatherForecast()
 
         // Then daily forecast are loaded into view
-        assertEquals(expectedDailyForecast, weatherForecastViewModel.weatherForecasts.value)
+        assertEquals(expectedDailyForecast, forecastViewModel.weatherForecasts.value)
     }
 
 
@@ -142,9 +142,9 @@ class WeatherForecastViewModelTest {
         `when`(forecastDataSource.getDailyForecasts()).thenReturn(Single.error(RuntimeException("Error while loading daily forecasts")))
 
         // When loading of weather forecasts is requested
-        weatherForecastViewModel.loadWeatherForecast()
+        forecastViewModel.loadWeatherForecast()
 
         // Then error message is shown
-        assertEquals("Error while loading daily forecasts", weatherForecastViewModel.displayErrorMessage.value)
+        assertEquals("Error while loading daily forecasts", forecastViewModel.displayErrorMessage.value)
     }
 }

@@ -1,5 +1,6 @@
 package com.decathlon.dojo.weather.viewmodel
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +10,7 @@ import com.decathlon.dojo.utils.schedulers.BaseSchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
-class WeatherForecastViewModel @Inject constructor(
+class ForecastViewModel @Inject constructor(
     private val forecastDataSource: ForecastDataSource,
     //TODO : 12 replace scheduler provider by coroutine dispatcher provider
     private val baseSchedulerProvider: BaseSchedulerProvider
@@ -29,6 +30,7 @@ class WeatherForecastViewModel @Inject constructor(
     /**
      * Loads weather forecasts from repository
      */
+    @SuppressLint("MissingPermission")
     fun loadWeatherForecast() {
         getDailyForecasts()
     }
@@ -37,7 +39,7 @@ class WeatherForecastViewModel @Inject constructor(
      * Refreshes and loads weather forecasts from repository
      */
     fun onRefresh() {
-        forecastDataSource.refreshDailyForecasts()
+        forecastDataSource.invalidateForecastsCache()
         getDailyForecasts()
     }
 

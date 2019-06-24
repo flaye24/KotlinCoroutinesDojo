@@ -10,13 +10,13 @@ import com.decathlon.dojo.data.source.local.ForecastLocalDataSource
 import com.decathlon.dojo.data.source.local.ForecastLocalDataSourceImpl
 import com.decathlon.dojo.data.source.remote.ForecastRemoteDataSource
 import com.decathlon.dojo.data.source.remote.ForecastRemoteDataSourceImpl
-import com.decathlon.dojo.data.source.remote.WeatherForecastServices
+import com.decathlon.dojo.data.source.remote.ForecastServices
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 
 @Module
-class WeatherForecastRepositoryModule {
+class ForecastRepositoryModule {
 
     @Provides
     fun provideWeatherForecastRemoteDataSource(weatherForecastRemoteDataSourceImpl: ForecastRemoteDataSourceImpl): ForecastRemoteDataSource =
@@ -32,8 +32,8 @@ class WeatherForecastRepositoryModule {
 
 
     @Provides
-    fun provideWeatherForecastServices(retrofit: Retrofit): WeatherForecastServices {
-        return retrofit.create(WeatherForecastServices::class.java)
+    fun provideWeatherForecastServices(retrofit: Retrofit): ForecastServices {
+        return retrofit.create(ForecastServices::class.java)
     }
 
     @Provides

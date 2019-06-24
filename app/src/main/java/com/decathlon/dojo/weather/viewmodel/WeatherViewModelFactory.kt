@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import javax.inject.Inject
 
-class WeatherViewModelFactory @Inject constructor(private val weatherForecastViewModel: WeatherForecastViewModel) : ViewModelProvider.Factory {
+class WeatherViewModelFactory @Inject constructor(private val forecastViewModel: ForecastViewModel) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return weatherForecastViewModel as T
+        return forecastViewModel as T
     }
 }

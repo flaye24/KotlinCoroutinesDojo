@@ -9,7 +9,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.decathlon.dojo.R
 import com.decathlon.dojo.databinding.ActivityWeatherForecastBinding
 import com.decathlon.dojo.weather.ForecastAdapter
-import com.decathlon.dojo.weather.viewmodel.WeatherForecastViewModel
+import com.decathlon.dojo.weather.viewmodel.ForecastViewModel
 import com.decathlon.dojo.weather.viewmodel.WeatherViewModelFactory
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
@@ -23,7 +23,7 @@ class WeatherForecastActivity : DaggerAppCompatActivity(), SwipeRefreshLayout.On
     @Inject
     lateinit var weatherViewModelFactory: WeatherViewModelFactory
 
-    private lateinit var weatherForecastViewModel: WeatherForecastViewModel
+    private lateinit var forecastViewModel: ForecastViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,8 +33,8 @@ class WeatherForecastActivity : DaggerAppCompatActivity(), SwipeRefreshLayout.On
 
         initWeatherForecastList()
 
-        weatherForecastViewModel = ViewModelProviders.of(this, weatherViewModelFactory).get(WeatherForecastViewModel::class.java)
-        weatherForecastViewModel.loadWeatherForecast()
+        forecastViewModel = ViewModelProviders.of(this, weatherViewModelFactory).get(ForecastViewModel::class.java)
+        forecastViewModel.loadWeatherForecast()
 
         initViewModelObservers()
         initSwipeToRefresh()
@@ -42,10 +42,10 @@ class WeatherForecastActivity : DaggerAppCompatActivity(), SwipeRefreshLayout.On
     }
 
     private fun initViewModelObservers() {
-        weatherForecastViewModel.weatherForecasts.observe(this, Observer { dailyForecasts ->
+        forecastViewModel.weatherForecasts.observe(this, Observer { dailyForecasts ->
             forecastAdapter.replaceData(dailyForecasts)
         })
-        weatherForecastViewModel.displayErrorMessage.observe(this, Observer { errorMessage ->
+        forecastViewModel.displayErrorMessage.observe(this, Observer { errorMessage ->
             displayErrorMessage(errorMessage)
         })
     }
@@ -64,7 +64,7 @@ class WeatherForecastActivity : DaggerAppCompatActivity(), SwipeRefreshLayout.On
     }
 
     override fun onRefresh() {
-        weatherForecastViewModel.onRefresh()
+        forecastViewModel.onRefresh()
         viewDataBinding.srlForecast.isRefreshing = false
     }
 
