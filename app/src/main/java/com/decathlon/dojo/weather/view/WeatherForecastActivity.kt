@@ -39,11 +39,14 @@ class WeatherForecastActivity : DaggerAppCompatActivity(), SwipeRefreshLayout.On
         initViewModelObservers()
         initSwipeToRefresh()
 
+        viewDataBinding.srlForecast.isRefreshing = true
+
     }
 
     private fun initViewModelObservers() {
         forecastViewModel.weatherForecasts.observe(this, Observer { dailyForecasts ->
             forecastAdapter.replaceData(dailyForecasts)
+            viewDataBinding.srlForecast.isRefreshing = false
         })
         forecastViewModel.displayErrorMessage.observe(this, Observer { errorMessage ->
             displayErrorMessage(errorMessage)

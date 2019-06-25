@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class ForecastViewModel @Inject constructor(
     private val forecastDataSource: ForecastDataSource,
-    //TODO : 12 replace scheduler provider by coroutine dispatcher provider
+    //TODO : 12 remove scheduler
     private val baseSchedulerProvider: BaseSchedulerProvider
 ) :
     ViewModel() {

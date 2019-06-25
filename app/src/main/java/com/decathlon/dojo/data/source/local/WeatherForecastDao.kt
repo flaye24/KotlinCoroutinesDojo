@@ -23,4 +23,13 @@ abstract class WeatherForecastDao {
     @Query("DELETE FROM $TABLE_DAILY_FORECAST")
     abstract fun deleteAllDailyForecasts(): Completable
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertDailyForecastsSync(dailyForecasts: List<DailyForecast>)
+
+    @Query("SELECT * FROM $TABLE_DAILY_FORECAST")
+    abstract fun getDailyForecastsSync(): List<DailyForecast>
+
+    @Query("DELETE FROM $TABLE_DAILY_FORECAST")
+    abstract fun deleteAllDailyForecastsSync()
+
 }
