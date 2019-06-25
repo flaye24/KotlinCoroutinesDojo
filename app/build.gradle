@@ -79,13 +79,11 @@ dependencies {
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
     testImplementation "com.google.truth:truth:$truthVersion"
 
-    //TODO : 1 - Add kotlin coroutines dependencies here
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion"
 
 
-    //TODO : 2 - Add kotlin room with coroutines support dependencies here
     //Room support for kotlin coroutines
     implementation "androidx.room:room-ktx:$roomVersion"
 }

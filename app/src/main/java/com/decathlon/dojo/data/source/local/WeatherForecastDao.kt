@@ -10,8 +10,6 @@ import com.decathlon.dojo.data.model.TABLE_DAILY_FORECAST
 @Dao
 abstract class WeatherForecastDao {
 
-    //TODO : 6 - Room now has coroutines support, convert to suspend functions
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertDailyForecasts(dailyForecasts: List<DailyForecast>)
 
@@ -20,5 +18,14 @@ abstract class WeatherForecastDao {
 
     @Query("DELETE FROM $TABLE_DAILY_FORECAST")
     abstract suspend fun deleteAllDailyForecasts()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertDailyForecastsSync(dailyForecasts: List<DailyForecast>)
+
+    @Query("SELECT * FROM $TABLE_DAILY_FORECAST")
+    abstract fun getDailyForecastsSync(): List<DailyForecast>
+
+    @Query("DELETE FROM $TABLE_DAILY_FORECAST")
+    abstract fun deleteAllDailyForecastsSync()
 
 }

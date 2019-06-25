@@ -3,31 +3,22 @@ package com.decathlon.dojo
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.decathlon.dojo.data.model.DailyForecast
 import com.decathlon.dojo.data.source.ForecastDataSource
-import com.decathlon.dojo.utils.dispatchers.CoroutineDispatcherProvider
-import com.decathlon.dojo.utils.dispatchers.TestCoroutineDispatcher
-import com.decathlon.dojo.utils.schedulers.BaseSchedulerProvider
-import com.decathlon.dojo.utils.schedulers.ImmediateSchedulerProvider
 import com.decathlon.dojo.weather.viewmodel.WeatherForecastViewModel
-import io.reactivex.Single
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Test
-
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
-import java.lang.RuntimeException
 
 
-@ExperimentalCoroutinesApi
 class WeatherForecastViewModelExperimentalTest {
 
     @get:Rule
@@ -36,7 +27,7 @@ class WeatherForecastViewModelExperimentalTest {
     @Mock
     private lateinit var forecastDataSource: ForecastDataSource
 
-    private lateinit var testCoroutineDispatcher: kotlinx.coroutines.test.TestCoroutineDispatcher
+    private lateinit var testCoroutineDispatcher: TestCoroutineDispatcher
 
     private lateinit var weatherForecastViewModel: WeatherForecastViewModel
 
@@ -123,16 +114,16 @@ class WeatherForecastViewModelExperimentalTest {
         // inject the mocks in the test the initMocks method needs to be called.
         MockitoAnnotations.initMocks(this)
 
-        testCoroutineDispatcher = kotlinx.coroutines.test.TestCoroutineDispatcher()
+        testCoroutineDispatcher = TestCoroutineDispatcher()
 
         Dispatchers.setMain(testCoroutineDispatcher)
 
         // Get a reference to the class under test
-        //weatherForecastViewModel = WeatherForecastViewModel(forecastDataSource)
+        weatherForecastViewModel = WeatherForecastViewModel(forecastDataSource)
     }
 
     @Test
-    fun dailyForecasts__loadWeatherForecast__loadDailyForecastIntoView() = runBlockingTest {
+    fun dailyForecasts__loadWeatherForecast__loadDailyForecastIntoView() = runBlocking {
         // Given an initialized WeatherForecastViewModel with daily forecasts
         `when`(forecastDataSource.getDailyForecasts()).thenReturn(mockedDailyForecast)
 
@@ -145,7 +136,7 @@ class WeatherForecastViewModelExperimentalTest {
 
 
     @Test
-    fun dailyForecastsError__loadWeatherForecast__displayErrorMessage() = runBlockingTest {
+    fun dailyForecastsError__loadWeatherForecast__displayErrorMessage() = runBlocking {
         // Given an error occurred while loading daily forecasts
         `when`(forecastDataSource.getDailyForecasts()).thenThrow(RuntimeException("Error while loading daily forecasts"))
 

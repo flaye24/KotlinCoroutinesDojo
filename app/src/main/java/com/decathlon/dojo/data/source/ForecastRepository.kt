@@ -3,6 +3,10 @@ package com.decathlon.dojo.data.source
 import com.decathlon.dojo.data.model.DailyForecast
 import com.decathlon.dojo.data.source.local.ForecastLocalDataSource
 import com.decathlon.dojo.data.source.remote.ForecastRemoteDataSource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -13,17 +17,21 @@ class ForecastRepository @Inject constructor(
 
     private var cacheIsDirty = false
 
-    //TODO : 11 - Convert implementation
-
-    override suspend fun getDailyForecasts(): List<DailyForecast> {
-
-        val localDailyForecasts = forecastLocalDataSource.getDailyForecasts()
-
-        if (localDailyForecasts.isEmpty() || cacheIsDirty) {
-            return getAndSaveRemoteDailyForecasts()
+    override suspend fun getDailyForecasts(): List<DailyForecast> = coroutineScope {
+        val localDailyForecastsDeferred = async(Dispatchers.IO) {
+            forecastLocalDataSource.getDailyForecasts()
         }
 
-        return localDailyForecasts
+        val localDailyForecasts = localDailyForecastsDeferred.await()
+
+        if (localDailyForecasts.isEmpty() || cacheIsDirty) {
+            val remoteDailyForecastDeferred = async(Dispatchers.IO) {
+                getAndSaveRemoteDailyForecasts()
+            }
+            return@coroutineScope remoteDailyForecastDeferred.await()
+        }
+
+        return@coroutineScope localDailyForecasts
     }
 
     override fun invalidateForecastsCache() {
