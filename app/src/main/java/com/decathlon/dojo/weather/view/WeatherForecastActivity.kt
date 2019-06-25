@@ -33,17 +33,21 @@ class WeatherForecastActivity : DaggerAppCompatActivity(), SwipeRefreshLayout.On
 
         initWeatherForecastList()
 
-        weatherForecastViewModel = ViewModelProviders.of(this, weatherViewModelFactory).get(WeatherForecastViewModel::class.java)
+        weatherForecastViewModel =
+            ViewModelProviders.of(this, weatherViewModelFactory).get(WeatherForecastViewModel::class.java)
         weatherForecastViewModel.loadWeatherForecast()
 
         initViewModelObservers()
         initSwipeToRefresh()
+
+        viewDataBinding.srlForecast.isRefreshing = true
 
     }
 
     private fun initViewModelObservers() {
         weatherForecastViewModel.weatherForecasts.observe(this, Observer { dailyForecasts ->
             forecastAdapter.replaceData(dailyForecasts)
+            viewDataBinding.srlForecast.isRefreshing = false
         })
         weatherForecastViewModel.displayErrorMessage.observe(this, Observer { errorMessage ->
             displayErrorMessage(errorMessage)
