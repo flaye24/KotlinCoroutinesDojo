@@ -19,7 +19,7 @@ class ForecastRepository @Inject constructor(
 
     override suspend fun getDailyForecasts(): List<DailyForecast> = coroutineScope {
         val localDailyForecastsDeferred = async(Dispatchers.IO) {
-            forecastLocalDataSource.getDailyForecasts()
+            forecastLocalDataSource.getDailyForecastsSync()
         }
 
         val localDailyForecasts = localDailyForecastsDeferred.await()
@@ -39,9 +39,9 @@ class ForecastRepository @Inject constructor(
 
     }
 
-    private suspend fun getAndSaveRemoteDailyForecasts(): List<DailyForecast> {
-        val remoteDailyForecasts = forecastRemoteDataSource.getDailyForecasts()
-        forecastLocalDataSource.saveDailyForecasts(remoteDailyForecasts)
+    private fun getAndSaveRemoteDailyForecasts(): List<DailyForecast> {
+        val remoteDailyForecasts = forecastRemoteDataSource.getDailyForecastsSync()
+        forecastLocalDataSource.saveDailyForecastsSync(remoteDailyForecasts)
         cacheIsDirty = false
         return remoteDailyForecasts
     }
