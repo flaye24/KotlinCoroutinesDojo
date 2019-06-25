@@ -16,13 +16,4 @@ class ForecastRemoteDataSourceImpl @Inject constructor(
         return weatherForecastMapper.convertDailyForecastDTOsToDailyForecasts(weatherForecastDTO.dailyForecastDTOs)
     }
 
-    override fun getDailyForecastsSync(): List<DailyForecast> {
-        val response = forecastServices.getWeatherForecastSync("json", "metric", "application/json").execute()
-        if (!response.isSuccessful) {
-            throw HttpException(response)
-        }
-        return weatherForecastMapper.convertDailyForecastDTOsToDailyForecasts(response.body()!!.dailyForecastDTOs)
-    }
-
-
 }

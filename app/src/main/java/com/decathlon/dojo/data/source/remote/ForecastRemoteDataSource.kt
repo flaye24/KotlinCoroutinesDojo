@@ -9,12 +9,4 @@ interface ForecastRemoteDataSource {
      * @return a [List] of [DailyForecast]
      */
     suspend fun getDailyForecasts(): List<DailyForecast>
-
-    /**
-     * Gets the weather daily forecast for the next x days from the api synchronously
-     *
-     *
-     * @return a [List] of [DailyForecast]
-     */
-    fun getDailyForecastsSync(): List<DailyForecast>
 }

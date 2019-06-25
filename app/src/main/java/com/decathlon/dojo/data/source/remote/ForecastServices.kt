@@ -13,6 +13,4 @@ interface ForecastServices {
     @GET("weather")
     suspend fun getWeatherForecast(@Query("mode") mode: String, @Query("units") unit: String, @Header("Content-Type") contentType: String): WeatherForecastDTO
 
-    @GET("weather")
-    fun getWeatherForecastSync(@Query("mode") mode: String, @Query("units") unit: String, @Header("Content-Type") contentType: String): Call<WeatherForecastDTO>
 }

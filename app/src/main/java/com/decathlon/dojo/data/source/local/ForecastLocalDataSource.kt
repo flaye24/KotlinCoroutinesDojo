@@ -22,18 +22,4 @@ interface ForecastLocalDataSource {
      */
     suspend fun saveDailyForecasts(weatherForecastToSave: List<DailyForecast>)
 
-    /**
-     * Saves the weather daily forecast in the local database synchronously
-     * @param weatherForecastToSave : a [List] of [DailyForecast] to save
-     *
-     */
-    fun saveDailyForecastsSync(weatherForecastToSave: List<DailyForecast>)
-
-    /**
-     * Gets the weather daily forecast for the next x days from the local database synchronously
-     *
-     * @return a [List] of [DailyForecast]
-     */
-    fun getDailyForecastsSync(): List<DailyForecast>
-
 }

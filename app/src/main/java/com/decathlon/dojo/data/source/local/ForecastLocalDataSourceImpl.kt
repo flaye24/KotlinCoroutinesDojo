@@ -16,14 +16,4 @@ class ForecastLocalDataSourceImpl @Inject constructor(private val weatherDatabas
         return weatherDatabase.getWeatherForecastDao().getDailyForecasts()
     }
 
-
-    override fun saveDailyForecastsSync(weatherForecastToSave: List<DailyForecast>) {
-        weatherDatabase.getWeatherForecastDao().deleteAllDailyForecastsSync()
-        return weatherDatabase.getWeatherForecastDao().insertDailyForecastsSync(weatherForecastToSave)
-    }
-
-    override fun getDailyForecastsSync(): List<DailyForecast> {
-        return weatherDatabase.getWeatherForecastDao().getDailyForecastsSync()
-    }
-
 }

@@ -17,21 +17,16 @@ class ForecastRepository @Inject constructor(
 
     private var cacheIsDirty = false
 
-    override suspend fun getDailyForecasts(): List<DailyForecast> = coroutineScope {
-        val localDailyForecastsDeferred = async(Dispatchers.IO) {
-            forecastLocalDataSource.getDailyForecasts()
-        }
+    override suspend fun getDailyForecasts(): List<DailyForecast> {
 
-        val localDailyForecasts = localDailyForecastsDeferred.await()
+        val localDailyForecasts = forecastLocalDataSource.getDailyForecasts()
 
         if (localDailyForecasts.isEmpty() || cacheIsDirty) {
-            val remoteDailyForecastDeferred = async(Dispatchers.IO) {
-                getAndSaveRemoteDailyForecasts()
-            }
-            return@coroutineScope remoteDailyForecastDeferred.await()
+
+            return getAndSaveRemoteDailyForecasts()
         }
 
-        return@coroutineScope localDailyForecasts
+        return localDailyForecasts
     }
 
     override fun invalidateForecastsCache() {
