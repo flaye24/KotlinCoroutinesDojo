@@ -138,16 +138,14 @@ class WeatherForecastViewModelTest {
         weatherForecastViewModel = WeatherForecastViewModel(forecastDataSource, locationManager)
     }
 
-    //TODO : fix unit tests to work with new getLastKnown suspend function
+    //TODO : 4 fix unit tests to work with new getLastKnown suspend function
     @Test
     fun dailyForecasts__loadWeatherForecast__loadDailyForecastIntoView() = runBlocking {
         // Given an initialized WeatherForecastViewModel with daily forecasts
         `when`(location.latitude).thenReturn(43.4)
         `when`(location.longitude).thenReturn(43.4)
 
-        doAnswer { (it.arguments[0] as (Result<Location>) -> Unit)(Result.success(location)) }
-            .`when`(locationManager).getLastKnowLocation(anyArgument())
-
+        `when`(locationManager.getLastKnowLocation()).thenReturn(location)
         `when`(forecastDataSource.getDailyForecasts(location)).thenReturn(mockedDailyForecast)
 
         // When loading of weather forecasts is requested
@@ -164,9 +162,7 @@ class WeatherForecastViewModelTest {
         `when`(location.latitude).thenReturn(43.4)
         `when`(location.longitude).thenReturn(43.4)
 
-        doAnswer { (it.arguments[0] as (Result<Location>) -> Unit)(Result.success(location)) }
-            .`when`(locationManager).getLastKnowLocation(anyArgument())
-
+        `when`(locationManager.getLastKnowLocation()).thenReturn(location)
         `when`(forecastDataSource.getDailyForecasts(location)).thenThrow(RuntimeException("Error while loading daily forecasts"))
 
         // When loading of weather forecasts is requested

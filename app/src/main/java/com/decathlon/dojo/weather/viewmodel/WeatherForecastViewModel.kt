@@ -43,22 +43,14 @@ class WeatherForecastViewModel @Inject constructor(
     //TODO : 3 remove callbacks and call new suspend getLastKnowLocation in launch coroutine
     @SuppressLint("MissingPermission")
     private fun getDailyForecasts() {
-        locationManager.getLastKnowLocation { locationResult ->
-            locationResult.onSuccess { location ->
-                viewModelScope.launch {
-                    try {
-                        val dailyForecasts = forecastDataSource.getDailyForecasts(location)
-                        _weatherForecasts.postValue(dailyForecasts)
-                    } catch (exception: Throwable) {
-                        _displayErrorMessage.value = exception.message
-                    }
-                }
+        viewModelScope.launch {
+            try {
+                val location = locationManager.getLastKnowLocation()
+                val dailyForecasts = forecastDataSource.getDailyForecasts(location)
+                _weatherForecasts.postValue(dailyForecasts)
+            } catch (exception: Throwable) {
+                _displayErrorMessage.value = exception.message
             }
-            locationResult.onFailure {
-                _displayErrorMessage.value = locationResult.exceptionOrNull()?.message
-            }
-
         }
-
     }
 }
