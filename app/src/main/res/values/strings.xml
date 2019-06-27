@@ -1,6 +1,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Kotlin-Coroutine-DOJO</string>
 
+    <string name="permission_rationale">Please allow location permission</string>
+
 
     <!-- - - - - - - - - - - - - - -
       - Used by SunshineDateUtils  -

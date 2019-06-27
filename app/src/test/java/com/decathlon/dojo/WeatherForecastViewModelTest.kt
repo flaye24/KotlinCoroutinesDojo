@@ -1,8 +1,10 @@
 package com.decathlon.dojo
 
+import android.location.Location
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.decathlon.dojo.data.model.DailyForecast
 import com.decathlon.dojo.data.source.ForecastDataSource
+import com.decathlon.dojo.utils.LocationManager
 import com.decathlon.dojo.weather.viewmodel.WeatherForecastViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -14,18 +16,32 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 
 
-class WeatherForecastViewModelExperimentalTest {
+class WeatherForecastViewModelTest {
+    companion object {
+        fun <T> anyArgument(): T {
+            Mockito.any<T>()
+            return null as T
+        }
+    }
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Mock
     private lateinit var forecastDataSource: ForecastDataSource
+
+    @Mock
+    private lateinit var locationManager: LocationManager
+
+    @Mock
+    private lateinit var location: Location
 
     private lateinit var testCoroutineDispatcher: TestCoroutineDispatcher
 
@@ -119,13 +135,20 @@ class WeatherForecastViewModelExperimentalTest {
         Dispatchers.setMain(testCoroutineDispatcher)
 
         // Get a reference to the class under test
-        weatherForecastViewModel = WeatherForecastViewModel(forecastDataSource)
+        weatherForecastViewModel = WeatherForecastViewModel(forecastDataSource, locationManager)
     }
 
+    //TODO : fix unit tests to work with new getLastKnown suspend function
     @Test
     fun dailyForecasts__loadWeatherForecast__loadDailyForecastIntoView() = runBlocking {
         // Given an initialized WeatherForecastViewModel with daily forecasts
-        `when`(forecastDataSource.getDailyForecasts()).thenReturn(mockedDailyForecast)
+        `when`(location.latitude).thenReturn(43.4)
+        `when`(location.longitude).thenReturn(43.4)
+
+        doAnswer { (it.arguments[0] as (Result<Location>) -> Unit)(Result.success(location)) }
+            .`when`(locationManager).getLastKnowLocation(anyArgument())
+
+        `when`(forecastDataSource.getDailyForecasts(location)).thenReturn(mockedDailyForecast)
 
         // When loading of weather forecasts is requested
         weatherForecastViewModel.loadWeatherForecast()
@@ -138,7 +161,13 @@ class WeatherForecastViewModelExperimentalTest {
     @Test
     fun dailyForecastsError__loadWeatherForecast__displayErrorMessage() = runBlocking {
         // Given an error occurred while loading daily forecasts
-        `when`(forecastDataSource.getDailyForecasts()).thenThrow(RuntimeException("Error while loading daily forecasts"))
+        `when`(location.latitude).thenReturn(43.4)
+        `when`(location.longitude).thenReturn(43.4)
+
+        doAnswer { (it.arguments[0] as (Result<Location>) -> Unit)(Result.success(location)) }
+            .`when`(locationManager).getLastKnowLocation(anyArgument())
+
+        `when`(forecastDataSource.getDailyForecasts(location)).thenThrow(RuntimeException("Error while loading daily forecasts"))
 
         // When loading of weather forecasts is requested
         weatherForecastViewModel.loadWeatherForecast()
@@ -152,3 +181,4 @@ class WeatherForecastViewModelExperimentalTest {
         Dispatchers.resetMain()
     }
 }
+

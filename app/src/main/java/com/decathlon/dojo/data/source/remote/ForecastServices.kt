@@ -11,6 +11,10 @@ import retrofit2.http.Query
 interface ForecastServices {
 
     @GET("weather")
-    suspend fun getWeatherForecast(@Query("mode") mode: String, @Query("units") unit: String, @Header("Content-Type") contentType: String): WeatherForecastDTO
+    suspend fun getWeatherForecast(
+        @Query("mode") mode: String, @Query("units") unit: String, @Query("lat") latitude: Double, @Query(
+            "lon"
+        ) longitude: Double, @Header("Content-Type") contentType: String
+    ): WeatherForecastDTO
 
 }

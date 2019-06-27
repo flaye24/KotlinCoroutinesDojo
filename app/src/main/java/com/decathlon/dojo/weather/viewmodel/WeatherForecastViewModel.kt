@@ -1,19 +1,20 @@
 package com.decathlon.dojo.weather.viewmodel
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.decathlon.dojo.data.model.DailyForecast
 import com.decathlon.dojo.data.source.ForecastDataSource
-import com.decathlon.dojo.utils.dispatchers.CoroutineDispatcherProvider
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
+import com.decathlon.dojo.utils.LocationManager
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class WeatherForecastViewModel @Inject constructor(
-    private val forecastDataSource: ForecastDataSource
+    private val forecastDataSource: ForecastDataSource,
+    private val locationManager: LocationManager
 ) :
     ViewModel() {
 
@@ -39,15 +40,25 @@ class WeatherForecastViewModel @Inject constructor(
     }
 
 
+    //TODO : 3 remove callbacks and call new suspend getLastKnowLocation in launch coroutine
+    @SuppressLint("MissingPermission")
     private fun getDailyForecasts() {
-        viewModelScope.launch {
-            try {
-                val dailyForecasts = forecastDataSource.getDailyForecasts()
-                _weatherForecasts.value = dailyForecasts
-            } catch (exception: Throwable) {
-                _displayErrorMessage.value = exception.message
+        locationManager.getLastKnowLocation { locationResult ->
+            locationResult.onSuccess { location ->
+                viewModelScope.launch {
+                    try {
+                        val dailyForecasts = forecastDataSource.getDailyForecasts(location)
+                        _weatherForecasts.postValue(dailyForecasts)
+                    } catch (exception: Throwable) {
+                        _displayErrorMessage.value = exception.message
+                    }
+                }
             }
-        }
-    }
+            locationResult.onFailure {
+                _displayErrorMessage.value = locationResult.exceptionOrNull()?.message
+            }
 
+        }
+
+    }
 }

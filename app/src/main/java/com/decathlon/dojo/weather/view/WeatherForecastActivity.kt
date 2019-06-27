@@ -1,5 +1,7 @@
 package com.decathlon.dojo.weather.view
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
@@ -12,7 +14,11 @@ import com.decathlon.dojo.weather.ForecastAdapter
 import com.decathlon.dojo.weather.viewmodel.WeatherForecastViewModel
 import com.decathlon.dojo.weather.viewmodel.WeatherViewModelFactory
 import dagger.android.support.DaggerAppCompatActivity
+import pub.devrel.easypermissions.AfterPermissionGranted
+import pub.devrel.easypermissions.EasyPermissions
 import javax.inject.Inject
+
+const val LOCATION_PERMISSIONS_REQUEST_CODE = 42
 
 class WeatherForecastActivity : DaggerAppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
@@ -25,6 +31,11 @@ class WeatherForecastActivity : DaggerAppCompatActivity(), SwipeRefreshLayout.On
 
     private lateinit var weatherForecastViewModel: WeatherForecastViewModel
 
+
+    private val LOCATION_PERMISSIONS =
+        arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weather_forecast)
@@ -35,12 +46,22 @@ class WeatherForecastActivity : DaggerAppCompatActivity(), SwipeRefreshLayout.On
 
         weatherForecastViewModel =
             ViewModelProviders.of(this, weatherViewModelFactory).get(WeatherForecastViewModel::class.java)
-        weatherForecastViewModel.loadWeatherForecast()
 
         initViewModelObservers()
         initSwipeToRefresh()
 
         viewDataBinding.srlForecast.isRefreshing = true
+
+        if (EasyPermissions.hasPermissions(this, *LOCATION_PERMISSIONS)) {
+            loadWeatherForecast()
+        } else {
+            EasyPermissions.requestPermissions(
+                this,
+                getString(R.string.permission_rationale),
+                LOCATION_PERMISSIONS_REQUEST_CODE,
+                *LOCATION_PERMISSIONS
+            )
+        }
 
     }
 
@@ -72,5 +93,14 @@ class WeatherForecastActivity : DaggerAppCompatActivity(), SwipeRefreshLayout.On
         viewDataBinding.srlForecast.isRefreshing = false
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
 
+    @AfterPermissionGranted(LOCATION_PERMISSIONS_REQUEST_CODE)
+    @SuppressLint("MissingPermission")
+    private fun loadWeatherForecast() {
+        weatherForecastViewModel.loadWeatherForecast()
+    }
 }

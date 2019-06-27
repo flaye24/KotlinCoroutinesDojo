@@ -1,8 +1,6 @@
 package com.decathlon.dojo.data.source.local
 
 import com.decathlon.dojo.data.model.DailyForecast
-import io.reactivex.Completable
-import io.reactivex.Single
 
 interface ForecastLocalDataSource {
 
