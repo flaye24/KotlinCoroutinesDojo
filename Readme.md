@@ -14,7 +14,7 @@ Android Studio 3.4.1
 Migrate a simple RX based weather forecast project to coroutines.
 
 Exercise 1 is on branch **Exercise-01-Rx-to-Coroutines**
-Solutions are one branches **Solution-01a-Rx-to-Coroutines** and **Solution-01b-Rx-to-Coroutines**
+Solutions are on branches **Solution-01a-Rx-to-Coroutines** and **Solution-01b-Rx-to-Coroutines**
 
 
 1. Callbacks to Coroutines
