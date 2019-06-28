@@ -69,4 +69,7 @@ ext {
     rxJavaVersion = '2.2.9'
     timberVersion = '4.7.1'
     truthVersion = '0.44'
+    playServicesLocation = '17.0.0'
+    easyPermissions = '3.0.0'
+
 }
