@@ -22,4 +22,4 @@ Solutions are on branches **Solution-01a-Rx-to-Coroutines** and **Solution-01b-R
 Convert play services location api callbacks to coroutines.
 
 Exercise 2 is on branch **Exercise-02-Callbacks-to-Coroutines**
-Solutions are one branches **Solution-02-Callbacks-to-Coroutines**
+Solution is on branches **Solution-02-Callbacks-to-Coroutines**
