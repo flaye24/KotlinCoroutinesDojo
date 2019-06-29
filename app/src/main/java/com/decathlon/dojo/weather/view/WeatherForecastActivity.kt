@@ -63,6 +63,7 @@ class WeatherForecastActivity : DaggerAppCompatActivity(), SwipeRefreshLayout.On
     }
 
     private fun displayErrorMessage(message: String) {
+        viewDataBinding.srlForecast.isRefreshing = false
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
