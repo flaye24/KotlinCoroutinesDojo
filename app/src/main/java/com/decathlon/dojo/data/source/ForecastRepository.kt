@@ -3,7 +3,6 @@ package com.decathlon.dojo.data.source
 import com.decathlon.dojo.data.model.DailyForecast
 import com.decathlon.dojo.data.source.local.ForecastLocalDataSource
 import com.decathlon.dojo.data.source.remote.ForecastRemoteDataSource
-import com.google.android.gms.location.LocationServices
 import io.reactivex.Single
 import javax.inject.Inject
 
